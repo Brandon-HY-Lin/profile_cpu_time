@@ -74,7 +74,7 @@ def get_time_diff (hash_new, hash_old)
 end
 
 def print_time_diff (hash_time)
-	printf( "%-20s\t%s\t%s\t%s\t%s\n", 
+	printf( "%-20s\t%s\t%s\t%s\t%s\t%s\n", 
 			"PID:NAME", "SUM", "user", "sys", "cuser", "csys")
 
 	hash_time.each {|key, array|
