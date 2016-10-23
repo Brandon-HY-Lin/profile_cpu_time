@@ -1,7 +1,17 @@
 #!/bin/ruby
 require 'csv'
-FILE_OLD="log_0.txt"
-FILE_NEW="log_1.txt"
+
+print ARGV.length
+
+if !ARGV.empty? && ARGV.length == 2
+FILE_OLD = ARGV[0]
+FILE_NEW = ARGV[1]
+else
+print "Warning: use default file name\n"
+FILE_OLD = "log_0.txt"
+FILE_NEW = "log_1.txt"
+end
+
 INDEX_PID=0
 INDEX_NAME=1
 INDEX_UTIME=14
@@ -18,7 +28,6 @@ INDEX_DIFF_SUM=4
 # read space seperated file
 old = CSV.read(FILE_OLD, {:col_sep => " "})
 new = CSV.read(FILE_NEW, {:col_sep => " "})
-
 
 def array_2d_to_hash (array_2d)
 
