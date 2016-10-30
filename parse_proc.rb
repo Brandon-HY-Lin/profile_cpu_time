@@ -1,5 +1,6 @@
 #!/bin/ruby
 require 'csv'
+require 'spreadsheet'
 
 print ARGV.length
 
@@ -98,6 +99,21 @@ def print_time_diff (hash_time)
 	}
 end
 
+def hash_time_to_array (hash_time)
+	a = Array.new
+
+	hash_time.each {|key, array|
+			a.push([ key, 
+				array[INDEX_DIFF_SUM],
+				array[INDEX_DIFF_UTIME],
+				array[INDEX_DIFF_STIME],
+				array[INDEX_DIFF_CUTIME],
+				array[INDEX_DIFF_CSTIME] 
+				])
+	}
+	return a
+end
+
 hash_old = array_2d_to_hash(old)
 hash_new = array_2d_to_hash(new)
 
@@ -106,4 +122,8 @@ hash_new = array_2d_to_hash(new)
 hash_time = get_time_diff(hash_new, hash_old)
 
 #print hash_time
-print_time_diff(hash_time)
+#print_time_diff(hash_time)
+
+array_time = hash_time_to_array(hash_time)
+
+print array_time
