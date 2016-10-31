@@ -2,6 +2,8 @@
 require 'csv'
 require 'spreadsheet'
 
+output_csv="output.csv"
+output_excel="output.xls"
 
 # set up default file names
 # usage: 
@@ -143,6 +145,25 @@ def array_to_csv (array_2d, output_file)
 	end
 end
 
+def array_to_excel(array_2d, output_excel)
+	# open the workbook
+	workbook = Spreadsheet::Workbook.new
+
+	# create a workbook
+	workbook.create_worksheet :name => 'time difference'
+
+	# specify a worksheet by index
+	sheet0 = workbook.worksheet(0)
+
+	# insert array to row of excel
+	array_2d.each_index { |index|
+		sheet0.insert_row(index, array_2d[index])
+	}
+
+	# write workbook to excel
+	workbook.write(output_excel)
+end
+
 # convert array to hash
 hash_old = array_2d_to_hash(old)
 hash_new = array_2d_to_hash(new)
@@ -154,4 +175,7 @@ hash_time = get_time_diff(hash_new, hash_old)
 array_time = hash_time_to_array(hash_time)
 
 # convert array to csv file
-array_to_csv(array_time, "out.csv")
+array_to_csv(array_time, output_csv)
+
+# convert array to excel file
+array_to_excel(array_time, output_excel)
