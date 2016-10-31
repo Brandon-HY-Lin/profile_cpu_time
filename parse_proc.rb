@@ -2,17 +2,23 @@
 require 'csv'
 require 'spreadsheet'
 
-print ARGV.length
 
+# set up default file names
+# usage: 
+#	ARG[0]: the file name of previous sample  
+#	ARG[1]: the file name of latest sample  
 if !ARGV.empty? && ARGV.length == 2
-FILE_OLD = ARGV[0]
-FILE_NEW = ARGV[1]
+	FILE_OLD = ARGV[0]
+	FILE_NEW = ARGV[1]
 else
-print "Warning: use default file name\n"
-FILE_OLD = "log_0.txt"
-FILE_NEW = "log_1.txt"
+	print "Warning: use default file name\n"
+	printf("number of input parameters: %d\n", ARGV.length)
+	FILE_OLD = "log_0.txt"
+	FILE_NEW = "log_1.txt"
 end
 
+# index of /proc/pid/stat
+# please use "man proc" to check the definition
 INDEX_PID=0
 INDEX_NAME=1
 INDEX_UTIME=14
@@ -20,6 +26,7 @@ INDEX_STIME=15
 INDEX_CUTIME=16
 INDEX_CSTIME=17
 
+# index of output format of csv file
 INDEX_DIFF_UTIME=0
 INDEX_DIFF_STIME=1
 INDEX_DIFF_CUTIME=2
@@ -30,6 +37,11 @@ INDEX_DIFF_SUM=4
 old = CSV.read(FILE_OLD, {:col_sep => " "})
 new = CSV.read(FILE_NEW, {:col_sep => " "})
 
+# convert 2d array to hash of 1d array
+# input:
+#	array_2d: 2d array
+# output:
+#	hash of 1d array
 def array_2d_to_hash (array_2d)
 
 	hash_array = Hash.new
@@ -52,11 +64,28 @@ def array_2d_to_hash (array_2d)
 	return hash_array
 end
 
+# calculate the time difference
+# input:
+#	index
+#	array_new: the latest sample
+#	array_old: the previous sample
+#	input type: 1d array
+# output:
+#	time difference
+#	type: integer
 def cal_time_diff (index, array_new, array_old)
 	# convet string to interger and caluate diff
 	return array_new[index].to_i - array_old[index].to_i
 end
 
+# calculate time difference between 2 samples
+# input: 
+#	hash_new: the latest sample
+#	hash_old: the previous sample
+#	type: hash of 1d array
+# output:
+#	time difference.
+#	type: hash of 1d array.
 def get_time_diff (hash_new, hash_old)
 	hash_time = Hash.new
 
@@ -83,24 +112,12 @@ def get_time_diff (hash_new, hash_old)
 	return hash_time
 end
 
-def print_time_diff (hash_time)
-	printf( "%-20s\t%s\t%s\t%s\t%s\t%s\n", 
-			"PID:NAME", "SUM", "user", "sys", "cuser", "csys")
-
-	hash_time.each {|key, array|
-		printf("%-20s\t%d\t%d\t%d\t%d\t%d\n", 
-				key, 
-				array[INDEX_DIFF_SUM],
-				array[INDEX_DIFF_UTIME],
-				array[INDEX_DIFF_STIME],
-				array[INDEX_DIFF_CUTIME],
-				array[INDEX_DIFF_CSTIME]
-				)
-	}
-end
-
+# convert hash of array to 2d array, and add commemt on 1st row.
+# input: hash of 1d array
+# output: hsh of array
 def hash_time_to_array (hash_time)
 	a = Array.new
+	a.push(["PID:NAME", "SUM", "user", "sys", "cuser", "csys"])
 
 	hash_time.each {|key, array|
 			a.push([ key, 
@@ -114,16 +131,27 @@ def hash_time_to_array (hash_time)
 	return a
 end
 
+# convert 2d array to csv file
+# input:
+#	array_2d: 2d array of time difference
+#	output_file: the name of csv file
+def array_to_csv (array_2d, output_file)
+	CSV.open(output_file, "w") do |csv|
+		array_2d.each { |array|
+			csv << array
+		}
+	end
+end
+
+# convert array to hash
 hash_old = array_2d_to_hash(old)
 hash_new = array_2d_to_hash(new)
 
-#print hash_old
-#print hash_new
+# calculate time diff
 hash_time = get_time_diff(hash_new, hash_old)
 
-#print hash_time
-#print_time_diff(hash_time)
-
+# convert hash to array
 array_time = hash_time_to_array(hash_time)
 
-print array_time
+# convert array to csv file
+array_to_csv(array_time, "out.csv")
