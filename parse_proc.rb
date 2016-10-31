@@ -2,7 +2,10 @@
 require 'csv'
 require 'spreadsheet'
 
+# default name of csv file
 output_csv="output.csv"
+
+# default name of excel file
 output_excel="output.xls"
 
 # set up default file names
@@ -145,6 +148,10 @@ def array_to_csv (array_2d, output_file)
 	end
 end
 
+# convert 2d array to excel file
+# input:
+#	array_2d: 2d array of time difference
+#	output_excel: the name of excel file
 def array_to_excel(array_2d, output_excel)
 	# open the workbook
 	workbook = Spreadsheet::Workbook.new
