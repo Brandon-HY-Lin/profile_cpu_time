@@ -1,10 +1,10 @@
 # profile_cpu_time
 
-Introduction:
+##Introduction:
   This program samples the cpu time and system within 60 seconds. It parse 
   the /proc/PID/stat information to csv file and excel file.
 
-Sample Output:
+##Sample Output:
 
 PID:NAME                 SUM	user	sys	cuser	csys  
 2133:(firefox)           707	707	    0	0	0  
@@ -20,16 +20,15 @@ PID:NAME                 SUM	user	sys	cuser	csys
 1351:(unity-panel-ser)	  13	13	0	0	0  
 
 
-=========================================================================
-Required Ruby packages
-  1. $ gem install spreadsheet
+##Required Ruby packages
+  - `gem install spreadsheet1`
 
-=========================================================================
-Usage:
-  1. $ ./sample_cpu_time.sh
-  2. $ ruby parse_proc.rb
 
-=========================================================================
-Default Output file: 
-  1. CSV file: output.csv
-  2. Excel file: output.xls
+##Usage:
+  - `./sample_cpu_time.sh`
+  - `ruby parse_proc.rb`
+
+
+##Default Output file: 
+  - CSV file: output.csv
+  - Excel file: output.xls
